@@ -1,4 +1,4 @@
-export const host = "http://localhost:5000";
+export const host = "https://chat-app-production-ed87.up.railway.app/";
 
 
 export const registerRoute = `${host}/api/auth/register`;
