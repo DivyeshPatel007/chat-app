@@ -10,18 +10,23 @@ dotenv.config()
 const PORT = process.env.PORT
 const app = express();
 
-app.use(cors());
+app.use(cors({
+    origin: 'https://chat-app-swart-pi.vercel.app',
+    credentials: true  // If your requests include credentials (cookies, HTTP authentication), set this to true
+}));
 app.use(express.json());
 
 connectDB().then(() => {
     const server = app.listen(PORT, () => {
         console.log(`Server is running at port: ${PORT} http://localhost:${PORT}`)
     })
-    const io = new Server(server);
+    const io = new Server(server, {
+        cors: ["*","https://chat-app-swart-pi.vercel.app/","http://localhost:5416"],
+        credentials: true,
+    });
 
     global.onlineUsers = new Map();
     io.on("connection", (socket) => {
-        console.log(`user is connected`)
         global.chatSocket = socket;
         socket.on("add-user", (userId) => {
             onlineUsers.set(userId, socket.id);
@@ -42,8 +47,8 @@ connectDB().then(() => {
 
 app.use('/api/auth', authRoutes)
 app.use('/api/messages', messageRoutes)
-app.get('/',(req,res)=>{
-    return res.json({message:"Welcome to the chap-app-backend"})
+app.get('/', (req, res) => {
+    return res.json({ message: "Welcome to the chap-app-backend" })
 })
 
 
