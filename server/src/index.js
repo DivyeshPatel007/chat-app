@@ -17,12 +17,7 @@ connectDB().then(() => {
     const server = app.listen(PORT, () => {
         console.log(`Server is running at port: ${PORT} http://localhost:${PORT}`)
     })
-    const io = new Server(server, {
-        cors: {
-            origin: "https://chat-app-tan-sigma.vercel.app",
-            credentials: true
-        }
-    });
+    const io = new Server(server);
 
     global.onlineUsers = new Map();
     io.on("connection", (socket) => {
