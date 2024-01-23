@@ -21,6 +21,7 @@ connectDB().then(() => {
 
     global.onlineUsers = new Map();
     io.on("connection", (socket) => {
+        console.log(`user is connected`)
         global.chatSocket = socket;
         socket.on("add-user", (userId) => {
             onlineUsers.set(userId, socket.id);
