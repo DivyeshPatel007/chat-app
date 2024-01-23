@@ -46,6 +46,9 @@ connectDB().then(() => {
 
 app.use('/api/auth', authRoutes)
 app.use('/api/messages', messageRoutes)
+app.get('/',(req,res)=>{
+    return res.json({message:"Welcome to the chap-app-backend"})
+})
 
 
 
