@@ -21,7 +21,7 @@ connectDB().then(() => {
         console.log(`Server is running at port: ${PORT} http://localhost:${PORT}`)
     })
     const io = new Server(server, {
-        cors: ["*","https://chat-app-swart-pi.vercel.app/","http://localhost:5416"],
+        cors: ["*","https://chat-app-swart-pi.vercel.app","http://localhost:5416"],
         credentials: true,
     });
 
