@@ -5,18 +5,18 @@ import { useState } from "react";
 import { IoMdSend } from "react-icons/io";
 import styled from "styled-components";
 
-function ChatInput({ handleSendMsg }) {
-//   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+function ChatInput({ handleSendMsg, handleTyping }) {
+  //   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [msg, setMsg] = useState("");
 
-//   const handleEmojiPickerhideShow = () => {
-//     setShowEmojiPicker(!showEmojiPicker);
-//   };
-//   const handleEmojiClick = (event, emojiObject) => {
-//     let message = msg;
-//     message += emojiObject.emoji;
-//     setMsg(message);
-//   };
+  //   const handleEmojiPickerhideShow = () => {
+  //     setShowEmojiPicker(!showEmojiPicker);
+  //   };
+  //   const handleEmojiClick = (event, emojiObject) => {
+  //     let message = msg;
+  //     message += emojiObject.emoji;
+  //     setMsg(message);
+  //   };
 
   const sendChat = (event) => {
     event.preventDefault();
@@ -25,7 +25,10 @@ function ChatInput({ handleSendMsg }) {
       setMsg("");
     }
   };
-
+  const handleInput = (e) => {
+    setMsg(e.target.value);
+    handleTyping();
+  };
   return (
     <Container>
       <div className="button-container">
@@ -48,7 +51,7 @@ function ChatInput({ handleSendMsg }) {
           type="text"
           placeholder="type your message here"
           value={msg}
-          onChange={(e) => setMsg(e.target.value)}
+          onChange={handleInput}
         />
         <button type="submit">
           <IoMdSend />

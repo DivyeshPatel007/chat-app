@@ -43,7 +43,6 @@ function Login() {
         }
         if (data.status) {
           toast.success(data.message, toastOptions);
-          console.log(navigate);
           navigate("/");
         } else {
           toast.error("Incorrect Password or Username", toastOptions);

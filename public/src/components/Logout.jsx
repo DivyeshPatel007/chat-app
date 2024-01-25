@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 function Logout() {
   const navigate = useNavigate();
   const handleClick = async () => {
-    console.log("first")
     const id = await JSON.parse(
       localStorage.getItem("chatApp")
     ).id;

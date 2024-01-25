@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import styled from "styled-components";
@@ -19,6 +20,7 @@ const toastOptions = {
 
 function SetAvatar() {
   const [avatars, setAvatars] = useState([]);
+  
   const [error, setError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedAvatar, setSelectedAvatar] = useState(undefined);
@@ -65,7 +67,6 @@ function SetAvatar() {
         setAvatars(data);
         setIsLoading(false);
       } catch (error) {
-        console.log("error", error);
         setError(true);
         setIsLoading(false);
       }
@@ -73,7 +74,6 @@ function SetAvatar() {
     fetchAvatar();
   }, []);
 
-  console.log(error);
   return (
     <>
       {isLoading ? (

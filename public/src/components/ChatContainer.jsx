@@ -12,6 +12,10 @@ function ChatContainer({ currentChat, currentUser, socket }) {
   const [arrivalMessage, setArrivalMessage] = useState(null);
   const [msgID, setMsgID] = useState("");
   const scrollRef = useRef();
+  const [isTyping, setIsTyping] = useState(false);
+  const [userTyping, setUserTyping] = useState(false);
+  const [userTypingID, setUserTypingID] = useState(null);
+
   // Backend call when chat-user changes
   useEffect(() => {
     const getAllMsg = async () => {
@@ -25,6 +29,7 @@ function ChatContainer({ currentChat, currentUser, socket }) {
     getAllMsg();
   }, [currentChat]);
 
+  // Get user data from localstorage
   useEffect(() => {
     const getCurrentChat = async () => {
       if (currentChat) {
@@ -54,8 +59,19 @@ function ChatContainer({ currentChat, currentUser, socket }) {
         setArrivalMessage({ fromSelf: false, message: msg.msg });
         setMsgID(msg.id);
       });
+      socket.current.on("user-typing", (msg) => {
+        setUserTyping(msg.isTyping);
+        setUserTypingID(msg.userID)
+      });
     }
   }, []);
+  useEffect(() => {
+    socket.current.emit("typing", {
+      to: currentChat._id,
+      from: currentUser.id,
+      message: { isTyping, userID: currentUser.id },
+    });
+  }, [isTyping]);
 
   useEffect(() => {
     if (msgID === currentChat._id) {
@@ -66,6 +82,13 @@ function ChatContainer({ currentChat, currentUser, socket }) {
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  const handleTyping = () => {
+    setIsTyping(true);
+    setTimeout(() => {
+      setIsTyping(false);
+    }, 2000);
+  };
 
   return (
     <Container>
@@ -79,6 +102,9 @@ function ChatContainer({ currentChat, currentUser, socket }) {
           </div>
           <div className="username">
             <h3>{currentChat.username}</h3>
+            {userTyping && userTypingID === currentChat._id && (
+              <p>typing....</p>
+            )}
           </div>
         </div>
         <Logout />
@@ -101,7 +127,7 @@ function ChatContainer({ currentChat, currentUser, socket }) {
           );
         })}
       </div>
-      <ChatInput handleSendMsg={handleSendMsg} />
+      <ChatInput handleSendMsg={handleSendMsg} handleTyping={handleTyping} />
     </Container>
   );
 }
@@ -130,6 +156,9 @@ const Container = styled.div`
       .username {
         h3 {
           color: white;
+        }
+        p {
+          color: #10af10;
         }
       }
     }

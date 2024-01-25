@@ -59,7 +59,6 @@ function Register() {
           email: email.toLowerCase(),
           password,
         });
-        console.log("data",data);
         if (data.status) {
           localStorage.chatApp = JSON.stringify(data.chatApp);
         }
