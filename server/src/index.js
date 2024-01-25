@@ -39,10 +39,10 @@ connectDB().then(() => {
             }
         });
         socket.on("typing",(data)=>{
-            console.log("DATA",data)
+            // console.log("DATA",data)
             const sendUserSocket = onlineUsers.get(data.to);
             if (sendUserSocket) {
-                socket.to(sendUserSocket).emit("user-typing", data.message.isTyping);
+                socket.to(sendUserSocket).emit("user-typing", data.message);
             }
         })
     });

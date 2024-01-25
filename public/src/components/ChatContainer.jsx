@@ -105,6 +105,9 @@ function ChatContainer({ currentChat, currentUser, socket }) {
             {userTyping && userTypingID === currentChat._id && (
               <p>typing....</p>
             )}
+            {/* {userTyping && (
+              <p>typing....</p>
+            )} */}
           </div>
         </div>
         <Logout />
