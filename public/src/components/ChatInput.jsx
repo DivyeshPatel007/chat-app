@@ -18,6 +18,8 @@ function ChatInput({ handleSendMsg, handleTyping }) {
   //     setMsg(message);
   //   };
 
+
+
   const sendChat = (event) => {
     event.preventDefault();
     if (msg.length > 0) {
