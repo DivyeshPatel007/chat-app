@@ -1,10 +1,9 @@
 /* eslint-disable react/prop-types */
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { recieveMessageRoute, sendMessageRoute } from "../utils/APIRoutes";
 import ChatInput from "./ChatInput";
-// import { v4 as uuidv4 } from "uuid";
 import Logout from "./Logout";
 
 function ChatContainer({ currentChat, currentUser, socket }) {
@@ -15,6 +14,8 @@ function ChatContainer({ currentChat, currentUser, socket }) {
   const [isTyping, setIsTyping] = useState(false);
   const [userTyping, setUserTyping] = useState(false);
   const [userTypingID, setUserTypingID] = useState(null);
+
+
 
   // Backend call when chat-user changes
   useEffect(() => {
@@ -61,16 +62,24 @@ function ChatContainer({ currentChat, currentUser, socket }) {
       });
       socket.current.on("user-typing", (msg) => {
         setUserTyping(msg.isTyping);
-        setUserTypingID(msg.userID)
+        setUserTypingID(msg.userID);
       });
     }
   }, []);
+
   useEffect(() => {
     socket.current.emit("typing", {
       to: currentChat._id,
       from: currentUser.id,
       message: { isTyping, userID: currentUser.id },
     });
+   const timerID =  setTimeout(() => {
+      setIsTyping(false);
+    },2000);
+
+    return ()=>{
+      clearTimeout(timerID)
+    }
   }, [isTyping]);
 
   useEffect(() => {
@@ -81,13 +90,11 @@ function ChatContainer({ currentChat, currentUser, socket }) {
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, userTyping]);
 
   const handleTyping = () => {
     setIsTyping(true);
-    setTimeout(() => {
-      setIsTyping(false);
-    }, 2000);
+   
   };
 
   return (
@@ -102,12 +109,6 @@ function ChatContainer({ currentChat, currentUser, socket }) {
           </div>
           <div className="username">
             <h3>{currentChat.username}</h3>
-            {userTyping && userTypingID === currentChat._id && (
-              <p>typing....</p>
-            )}
-            {/* {userTyping && (
-              <p>typing....</p>
-            )} */}
           </div>
         </div>
         <Logout />
@@ -129,6 +130,13 @@ function ChatContainer({ currentChat, currentUser, socket }) {
             </div>
           );
         })}
+        {userTyping && userTypingID === currentChat._id && (
+          <TypingParagraph>
+            typing <span className="dot">.</span>
+            <span className="dot">.</span>
+            <span className="dot">.</span>
+          </TypingParagraph>
+        )}
       </div>
       <ChatInput handleSendMsg={handleSendMsg} handleTyping={handleTyping} />
     </Container>
@@ -172,6 +180,9 @@ const Container = styled.div`
     flex-direction: column;
     gap: 1rem;
     overflow: auto;
+    .typing {
+      color: #10af10;
+    }
     &::-webkit-scrollbar {
       width: 0.2rem;
       &-thumb {
@@ -207,6 +218,41 @@ const Container = styled.div`
         background-color: #9900ff20;
       }
     }
+  }
+`;
+
+const typingAnimation = keyframes`
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+`;
+
+// Styled component for the paragraph
+const TypingParagraph = styled.p`
+  max-width: 40%;
+  overflow-wrap: break-word;
+  padding: 0.5rem;
+  font-size: 1.1rem;
+  font-weight: 800;
+  border-radius: 1rem;
+  color: #d1d1d1;
+  .dot {
+    /* width:10px;
+    height:10px; */
+    font-size: 35px;
+    display: inline-block;
+    animation: ${typingAnimation} 1.25s ease-in-out infinite;
+  }
+
+  .dot:nth-child(2) {
+    animation-delay: 0.25s;
+  }
+
+  .dot:nth-child(3) {
+    animation-delay: 0.5s;
   }
 `;
 
